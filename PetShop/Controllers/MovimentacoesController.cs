@@ -71,14 +71,18 @@ namespace PetShop.Controllers
                 if (movimentacao.Tipo == "E")
                 {
                     produto.EstoqueAtual += movimentacao.Quantidade;
-                    movimentacao.ValorTotal = movimentacao.Quantidade * Produto.PrecoCusto;
+                    movimentacao.ValorTotal = movimentacao.Quantidade * produto.PrecoCusto;
                 }
                 else
                 {
-                    Produto.EstoqueAtual -= movimentacao.Quantidade;
+                    produto.EstoqueAtual -= movimentacao.Quantidade;
                     movimentacao.ValorTotal = movimentacao.Quantidade * produto.PrecoVenda;
                 }
 
+                if (produto.EstoqueAtual <= produto.EstoqueMinimo)
+                {
+                    TempData["Alerta"] = "O produto" + produto.Nome + "Esta abaixo do estoque minimo!";
+                }
 
                 _context.Add(movimentacao);
                 await _context.SaveChangesAsync();
